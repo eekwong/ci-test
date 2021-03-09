@@ -8,7 +8,22 @@ steps:
   commands:
   - echo hello world
 
-- name: fr
-  image: alpine
-  commands:
-  - echo bonjour monde
+- name: docker
+  image: matthewkwong/drone-docker:b85b10e
+  environment:
+    PRISMA_CLOUD_USERNAME:
+      from_secret: PRISMA_CLOUD_USERNAME
+    PRISMA_CLOUD_PASSWORD:
+      from_secret: PRISMA_CLOUD_PASSWORD
+    CONSOLE_URL:
+      from_secret: CONSOLE_URL
+  settings:
+    repo: foo/bar
+    tags: latest
+    dry_run: true
+    commands:
+    - apk update
+    - apk add curl
+    - curl -k -u "$PRISMA_CLOUD_USERNAME:$PRISMA_CLOUD_PASSWORD" --output /tmp/twistcli $CONSOLE_URL/api/v1/util/twistcli
+    - chmod a+x /tmp/twistcli
+    - /tmp/twistcli images scan --address $CONSOLE_URL --details -u $PRISMA_CLOUD_USERNAME -p "$PRISMA_CLOUD_PASSWORD" foo/bar
