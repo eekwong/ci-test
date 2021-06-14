@@ -22,6 +22,8 @@ steps:
     tags: latest
     dry_run: true
     commands:
+    - ls -al /etc/ssl/certs
+    - ls -al /usr/local/share/ca-certificates/
     - apk update
     - apk add curl
     - curl -k -u "$PRISMA_CLOUD_USERNAME:$PRISMA_CLOUD_PASSWORD" --output /tmp/twistcli $CONSOLE_URL/api/v1/util/twistcli
